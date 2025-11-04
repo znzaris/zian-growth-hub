@@ -1,0 +1,322 @@
+<!--
+Zian's Growth Hub
+Static single-file website (index.html)
+
+How to use:
+- Open this file (index.html) in a browser to preview.
+- To edit progress numbers, find the `// --- USER VALUES ---` section inside the <script> near the bottom
+  and change the numeric values (amounts & percent). Save and refresh the page.
+- To host: upload this single file to GitHub Pages (repository root /docs or main branch), Netlify, or any static host.
+
+Files: single-file HTML with embedded CSS and JS.
+Design: light theme, soft & cozy style, mobile-friendly.
+--> 
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Zian's Growth Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#fffaf9;
+      --card:#fff;
+      --muted:#8b7d7a;
+      --accent:#f7c6d1; /* sakura pink */
+      --accent-2:#f5e9e6; /* soft beige */
+      --shadow: 0 6px 18px rgba(18,16,15,0.06);
+      --glass: rgba(255,255,255,0.6);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:'Inter', 'Noto Sans JP', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: linear-gradient(180deg, var(--bg) 0%, #fffaf6 100%);
+      color:#3b2f2d;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:32px;
+      display:flex;
+      justify-content:center;
+    }
+    .wrap{width:100%;max-width:980px}
+    header{display:flex;align-items:center;gap:18px;margin-bottom:22px}
+    .logo{width:72px;height:72px;border-radius:18px;background:linear-gradient(135deg,var(--accent),#ffeef0);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}
+    .logo h1{font-family:'Noto Sans JP';font-size:26px;margin:0;color:#7b4b58}
+    .title{flex:1}
+    .title h2{margin:0;font-size:20px;font-weight:600}
+    .title p{margin:4px 0 0;color:var(--muted);font-size:14px}
+
+    main{display:grid;grid-template-columns: 1fr 360px;gap:20px}
+    @media (max-width:880px){main{grid-template-columns:1fr}}
+
+    /* left column */
+    .panel{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+    .intro{display:flex;gap:14px;align-items:flex-start}
+    .intro .avatar{width:72px;height:72px;border-radius:12px;background:linear-gradient(180deg,#fff, #fffaf6);display:flex;align-items:center;justify-content:center;border:1px solid rgba(0,0,0,0.03)}
+    .intro h3{margin:0}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+
+    .card-compact{background:var(--accent-2);padding:10px;border-radius:12px}
+    .small{font-size:13px;color:var(--muted)}
+
+    /* progress */
+    .progress-wrap{margin:12px 0}
+    .progress-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+    .prog-info{flex:1}
+    .label{font-size:14px;margin-bottom:6px}
+    .bar{height:14px;background:linear-gradient(90deg,#f3f1f0,#fff);border-radius:10px;overflow:hidden;border:1px solid rgba(0,0,0,0.04)}
+    .bar-inner{height:100%;background:linear-gradient(90deg,var(--accent),#ffdbe6);width:0%;transition:width 700ms cubic-bezier(.2,.9,.3,1)}
+    .amount{font-weight:600;font-size:13px;color:#5b3d3f}
+
+    /* projects */
+    .projects{display:grid;gap:10px}
+    .project-item{padding:12px;border-radius:12px;background:linear-gradient(180deg,#fff,#fffaf6);border:1px solid rgba(0,0,0,0.03)}
+    .tags{display:flex;gap:8px;margin-top:8px}
+    .tag{background:#fff;padding:6px 8px;border-radius:999px;font-size:12px;border:1px solid rgba(0,0,0,0.04)}
+
+    /* right column */
+    aside{display:flex;flex-direction:column;gap:12px}
+    .widget{padding:14px;border-radius:14px;background:linear-gradient(180deg,#fff,#fffaf6);box-shadow:var(--shadow)}
+    .widget h4{margin:0 0 8px 0}
+
+    .jlpt{display:flex;flex-direction:column;gap:8px}
+    .flower{width:36px;height:36px;border-radius:50%;background:linear-gradient(180deg,#fff6f8,#ffeef0);display:flex;align-items:center;justify-content:center;font-weight:700;color:#8b4d56}
+
+    footer{margin-top:22px;text-align:center;color:var(--muted);font-size:13px}
+
+    /* reflection journal */
+    .journal{min-height:120px;border-radius:12px;padding:12px;background:linear-gradient(180deg,#fff,#fffaf6);border:1px dashed rgba(0,0,0,0.03)}
+
+    /* small CTA */
+    .btn{display:inline-block;padding:10px 14px;border-radius:12px;background:var(--accent);color:#6b2f38;text-decoration:none;font-weight:600}
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo"><h1>Z</h1></div>
+      <div class="title">
+        <h2>Zian's Growth Hub</h2>
+        <p>Growing in data, language, and life — one step at a time.</p>
+      </div>
+      <div style="text-align:right">
+        <div class="small">Monthly salary: <strong>RM 3,000</strong></div>
+        <div class="small">Saving-first strategy • Light theme</div>
+      </div>
+    </header>
+
+    <main>
+      <section>
+        <div class="panel intro">
+          <div class="avatar"><div style="font-weight:700;color:#995d67">ZZ</div></div>
+          <div style="flex:1">
+            <h3>Hi — I’m Zian</h3>
+            <p class="small">Business Analyst by day, learning Data Engineering and studying Japanese. This hub tracks my financial goals, JLPT progress, and projects.</p>
+            <div class="grid-2">
+              <div class="card-compact">
+                <div class="small">This month</div>
+                <div style="font-weight:700">Save first: RM 1,100</div>
+                <div class="small">Goals: Japan, License, Apartment/EV, Upskill</div>
+              </div>
+              <div class="card-compact">
+                <div class="small">Quick tips</div>
+                <div style="font-weight:700">Autopay full card • Track monthly</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <div class="panel">
+          <h4 style="margin-top:0">Progress Overview</h4>
+          <div class="progress-wrap">
+            <div class="progress-row">
+              <div class="prog-info">
+                <div class="label">Japan Trip Fund <span class="small">(goal RM 8,000)</span></div>
+                <div class="bar"><div class="bar-inner" id="bar-japan" style="width:0%"></div></div>
+              </div>
+              <div class="amount" id="amt-japan">RM 0</div>
+            </div>
+
+            <div class="progress-row">
+              <div class="prog-info">
+                <div class="label">Driving License <span class="small">(goal RM 2,800)</span></div>
+                <div class="bar"><div class="bar-inner" id="bar-license" style="width:0%"></div></div>
+              </div>
+              <div class="amount" id="amt-license">RM 0</div>
+            </div>
+
+            <div class="progress-row">
+              <div class="prog-info">
+                <div class="label">Apartment / EV Fund <span class="small">(goal RM 100,000)</span></div>
+                <div class="bar"><div class="bar-inner" id="bar-ev" style="width:0%"></div></div>
+              </div>
+              <div class="amount" id="amt-ev">RM 0</div>
+            </div>
+
+            <div class="progress-row">
+              <div class="prog-info">
+                <div class="label">JLPT N4 Progress <span class="small">(goal: N4)</span></div>
+                <div class="bar"><div class="bar-inner" id="bar-jlpt" style="width:0%"></div></div>
+              </div>
+              <div class="amount" id="amt-jlpt">0%</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <div class="panel">
+          <h4 style="margin-top:0">Career & Projects</h4>
+          <div class="projects">
+            <div class="project-item">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <strong>ETL: BLOB conversion (Oracle → Files)</strong>
+                  <div class="small">Script to extract files from BLOBs and store metadata to MIG_BLOB table. (Idea: separate script per source_table)</div>
+                </div>
+                <div class="small">Status: Practising</div>
+              </div>
+              <div class="tags"><div class="tag">Python</div><div class="tag">Oracle</div><div class="tag">ETL</div></div>
+            </div>
+
+            <div class="project-item">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <strong>Data Cleaning Portfolio</strong>
+                  <div class="small">Kaggle CSV → Postgres pipeline; focus on reproducible transformations.</div>
+                </div>
+                <div class="small">Status: Planned</div>
+              </div>
+              <div class="tags"><div class="tag">SQL</div><div class="tag">Pandas</div><div class="tag">GitHub</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <div class="panel">
+          <h4 style="margin-top:0">Monthly Reflection</h4>
+          <div class="journal" id="journal">Write a brief note here about what went well this month and what to improve next month. Example: "Saved RM1100, completed 4 SQL lessons, booked driving school trial."</div>
+        </div>
+
+      </section>
+
+      <aside>
+        <div class="widget">
+          <h4>Snapshot</h4>
+          <div class="small">Emergency fund suggestion: RM 6,000+</div>
+          <div style="height:10px"></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <div class="flower">N4</div>
+            <div>
+              <div class="small">Japanese Goal</div>
+              <div style="font-weight:700">JLPT N4 — keep studying weekly</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="widget">
+          <h4>Quick habits</h4>
+          <ul style="margin:6px 0 0 18px;color:var(--muted)">
+            <li>Save first: transfer on payday</li>
+            <li>Autopay credit card (full)</li>
+            <li>Track one project a month</li>
+          </ul>
+        </div>
+
+        <div class="widget">
+          <h4>JLPT Progress</h4>
+          <div class="jlpt">
+            <div style="display:flex;align-items:center;gap:10px"><div style="flex:1"><div class="small">Vocabulary</div><div style="font-weight:700" id="jlpt-vocab">0/800</div></div><div style="width:48px;text-align:right">🏷️</div></div>
+            <div style="display:flex;align-items:center;gap:10px"><div style="flex:1"><div class="small">Grammar</div><div style="font-weight:700" id="jlpt-grammar">0/200</div></div><div style="width:48px;text-align:right">📘</div></div>
+            <div style="display:flex;align-items:center;gap:10px"><div style="flex:1"><div class="small">Listening</div><div style="font-weight:700" id="jlpt-listen">0/100</div></div><div style="width:48px;text-align:right">🎧</div></div>
+          </div>
+        </div>
+
+        <div class="widget">
+          <h4>Dream board</h4>
+          <div class="small">Apartment: cosy studio. EV: compact city EV. Japan: 3-week trip + short course.</div>
+          <div style="height:10px"></div>
+          <a class="btn" href="#">Download CV</a>
+        </div>
+
+      </aside>
+    </main>
+
+    <footer>
+      Built for you • Edit values in the script section of this file to update progress.
+    </footer>
+  </div>
+
+  <script>
+    // --- USER VALUES ---
+    // Update these values to reflect your current savings/progress.
+    const user = {
+      monthlySalary: 3000,
+      saveThisMonth: 1100,
+
+      // funds in RM
+      funds: {
+        japan: { current: 2200, goal: 8000 },
+        license: { current: 900, goal: 2800 },
+        ev: { current: 5000, goal: 100000 },
+      },
+      // JLPT progress (percent or counts)
+      jlpt: { percent: 60, vocab: 240, vocabGoal: 800, grammar: 60, grammarGoal:200, listen: 40, listenGoal:100 }
+    }
+
+    function formatRM(x){ return 'RM ' + x.toLocaleString('en-MY') }
+
+    function updateProgress(){
+      // Japan
+      const pJapan = Math.min(100, Math.round(user.funds.japan.current / user.funds.japan.goal * 100))
+      document.getElementById('bar-japan').style.width = pJapan + '%'
+      document.getElementById('amt-japan').textContent = formatRM(user.funds.japan.current)
+
+      // License
+      const pLic = Math.min(100, Math.round(user.funds.license.current / user.funds.license.goal * 100))
+      document.getElementById('bar-license').style.width = pLic + '%'
+      document.getElementById('amt-license').textContent = formatRM(user.funds.license.current)
+
+      // EV
+      const pEv = Math.min(100, Math.round(user.funds.ev.current / user.funds.ev.goal * 100))
+      document.getElementById('bar-ev').style.width = pEv + '%'
+      document.getElementById('amt-ev').textContent = formatRM(user.funds.ev.current)
+
+      // JLPT
+      const pJlpt = Math.min(100, Math.round(user.jlpt.percent))
+      document.getElementById('bar-jlpt').style.width = pJlpt + '%'
+      document.getElementById('amt-jlpt').textContent = pJlpt + '%'
+
+      document.getElementById('jlpt-vocab').textContent = user.jlpt.vocab + '/' + user.jlpt.vocabGoal
+      document.getElementById('jlpt-grammar').textContent = user.jlpt.grammar + '/' + user.jlpt.grammarGoal
+      document.getElementById('jlpt-listen').textContent = user.jlpt.listen + '/' + user.jlpt.listenGoal
+    }
+
+    // init
+    updateProgress()
+
+    // Simple editable journal: click to edit, click outside to save
+    const journal = document.getElementById('journal')
+    journal.addEventListener('click', ()=>{
+      if (journal.getAttribute('contenteditable') !== 'true'){
+        journal.setAttribute('contenteditable','true'); journal.focus(); journal.style.border='1px solid rgba(0,0,0,0.06)';
+      }
+    })
+    journal.addEventListener('blur', ()=>{
+      journal.setAttribute('contenteditable','false'); journal.style.border='1px dashed rgba(0,0,0,0.03)';
+    })
+
+  </script>
+</body>
+</html>
