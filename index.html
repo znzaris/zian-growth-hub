@@ -1,16 +1,19 @@
 <!--
-Zian's Growth Hub
-Static single-file website (index.html)
+Zian's Growth Hub — Interactive v2
+Single-file static HTML with interactive monthly checklist (history), vertical timeline, and dream board images.
 
 How to use:
-- Open this file (index.html) in a browser to preview.
-- To edit progress numbers, find the `// --- USER VALUES ---` section inside the <script> near the bottom
-  and change the numeric values (amounts & percent). Save and refresh the page.
-- To host: upload this single file to GitHub Pages (repository root /docs or main branch), Netlify, or any static host.
+- Open index.html in browser to preview.
+- Edit user values in the `// --- USER VALUES ---` JS section to change savings and JLPT progress.
+- Checklist stores month-by-month data in localStorage. Use the month navigation to view past months.
+- To host: upload this file as index.html to your GitHub Pages repo root.
 
-Files: single-file HTML with embedded CSS and JS.
-Design: light theme, soft & cozy style, mobile-friendly.
---> 
+Features added in v2:
+- Interactive monthly budget checklist with history (localStorage)
+- Vertical yearly roadmap (journey cards)
+- Dream board with Pinterest embed and EV image
+- Removed CV download
+-->
 
 <!doctype html>
 <html lang="en">
@@ -28,7 +31,7 @@ Design: light theme, soft & cozy style, mobile-friendly.
       --muted:#8b7d7a;
       --accent:#f7c6d1; /* sakura pink */
       --accent-2:#f5e9e6; /* soft beige */
-      --shadow: 0 6px 18px rgba(18,16,15,0.06);
+      --shadow: 0 8px 28px rgba(18,16,15,0.06);
       --glass: rgba(255,255,255,0.6);
       --radius:16px;
     }
@@ -41,26 +44,24 @@ Design: light theme, soft & cozy style, mobile-friendly.
       color:#3b2f2d;
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
-      padding:32px;
+      padding:28px;
       display:flex;
       justify-content:center;
     }
-    .wrap{width:100%;max-width:980px}
-    header{display:flex;align-items:center;gap:18px;margin-bottom:22px}
+    .wrap{width:100%;max-width:1100px}
+    header{display:flex;align-items:center;gap:18px;margin-bottom:18px}
     .logo{width:72px;height:72px;border-radius:18px;background:linear-gradient(135deg,var(--accent),#ffeef0);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}
     .logo h1{font-family:'Noto Sans JP';font-size:26px;margin:0;color:#7b4b58}
     .title{flex:1}
-    .title h2{margin:0;font-size:20px;font-weight:600}
-    .title p{margin:4px 0 0;color:var(--muted);font-size:14px}
+    .title h2{margin:0;font-size:22px;font-weight:700}
+    .title p{margin:6px 0 0;color:var(--muted);font-size:14px}
 
-    main{display:grid;grid-template-columns: 1fr 360px;gap:20px}
-    @media (max-width:880px){main{grid-template-columns:1fr}}
+    main{display:grid;grid-template-columns:1fr 420px;gap:20px}
+    @media (max-width:980px){main{grid-template-columns:1fr}}
 
-    /* left column */
     .panel{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
     .intro{display:flex;gap:14px;align-items:flex-start}
-    .intro .avatar{width:72px;height:72px;border-radius:12px;background:linear-gradient(180deg,#fff, #fffaf6);display:flex;align-items:center;justify-content:center;border:1px solid rgba(0,0,0,0.03)}
-    .intro h3{margin:0}
+    .avatar{width:72px;height:72px;border-radius:12px;background:linear-gradient(180deg,#fff, #fffaf6);display:flex;align-items:center;justify-content:center;border:1px solid rgba(0,0,0,0.03)}
     .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
 
     .card-compact{background:var(--accent-2);padding:10px;border-radius:12px}
@@ -81,21 +82,29 @@ Design: light theme, soft & cozy style, mobile-friendly.
     .tags{display:flex;gap:8px;margin-top:8px}
     .tag{background:#fff;padding:6px 8px;border-radius:999px;font-size:12px;border:1px solid rgba(0,0,0,0.04)}
 
-    /* right column */
     aside{display:flex;flex-direction:column;gap:12px}
     .widget{padding:14px;border-radius:14px;background:linear-gradient(180deg,#fff,#fffaf6);box-shadow:var(--shadow)}
-    .widget h4{margin:0 0 8px 0}
 
-    .jlpt{display:flex;flex-direction:column;gap:8px}
-    .flower{width:36px;height:36px;border-radius:50%;background:linear-gradient(180deg,#fff6f8,#ffeef0);display:flex;align-items:center;justify-content:center;font-weight:700;color:#8b4d56}
+    /* checklist */
+    .checklist{display:flex;flex-direction:column;gap:10px}
+    .check-item{display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;background:var(--card);border:1px solid rgba(0,0,0,0.03)}
+    .check-item input{width:18px;height:18px}
+    .month-nav{display:flex;gap:8px;align-items:center}
+    .month-label{font-weight:700}
 
-    footer{margin-top:22px;text-align:center;color:var(--muted);font-size:13px}
+    /* timeline */
+    .timeline{display:flex;flex-direction:column;gap:12px}
+    .journey{display:flex;gap:12px;align-items:flex-start}
+    .journey .year{width:68px;font-weight:700;color:#7b4b58}
+    .journey .card{flex:1;padding:12px;border-radius:12px;background:linear-gradient(180deg,#fff,#fffaf6);border:1px solid rgba(0,0,0,0.03)}
 
-    /* reflection journal */
-    .journal{min-height:120px;border-radius:12px;padding:12px;background:linear-gradient(180deg,#fff,#fffaf6);border:1px dashed rgba(0,0,0,0.03)}
+    /* dream board */
+    .moodboard{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .moodboard img{width:100%;border-radius:10px;object-fit:cover;height:150px;border:1px solid rgba(0,0,0,0.04)}
 
-    /* small CTA */
-    .btn{display:inline-block;padding:10px 14px;border-radius:12px;background:var(--accent);color:#6b2f38;text-decoration:none;font-weight:600}
+    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
+
+    .btn{display:inline-block;padding:8px 12px;border-radius:10px;background:var(--accent);color:#6b2f38;text-decoration:none;font-weight:600}
 
   </style>
 </head>
@@ -109,7 +118,7 @@ Design: light theme, soft & cozy style, mobile-friendly.
       </div>
       <div style="text-align:right">
         <div class="small">Monthly salary: <strong>RM 3,000</strong></div>
-        <div class="small">Saving-first strategy • Light theme</div>
+        <div class="small">Saving-first strategy • Interactive checklist</div>
       </div>
     </header>
 
@@ -119,7 +128,7 @@ Design: light theme, soft & cozy style, mobile-friendly.
           <div class="avatar"><div style="font-weight:700;color:#995d67">ZZ</div></div>
           <div style="flex:1">
             <h3>Hi — I’m Zian</h3>
-            <p class="small">Business Analyst by day, learning Data Engineering and studying Japanese. This hub tracks my financial goals, JLPT progress, and projects.</p>
+            <p class="small">Business Analyst → learning Data Engineering. I track savings, JLPT N4 progress, and monthly habits here.</p>
             <div class="grid-2">
               <div class="card-compact">
                 <div class="small">This month</div>
@@ -176,6 +185,30 @@ Design: light theme, soft & cozy style, mobile-friendly.
         <div style="height:14px"></div>
 
         <div class="panel">
+          <h4 style="margin-top:0">Monthly Budget Checklist</h4>
+          <div class="small">Tip: Use this on payday — the checklist saves automatically per month and shows history.</div>
+          <div style="height:12px"></div>
+          <div class="month-nav">
+            <button class="btn" id="prev-month">◀</button>
+            <div class="month-label" id="month-label">Month</div>
+            <button class="btn" id="next-month">▶</button>
+            <div style="flex:1"></div>
+            <button class="btn" id="clear-month">Clear</button>
+          </div>
+
+          <div style="height:10px"></div>
+          <div class="checklist" id="checklist">
+            <!-- Checklist items injected here -->
+          </div>
+
+          <div style="height:12px"></div>
+          <div class="small">History</div>
+          <ul id="history-list" style="margin:8px 0 0 18px;color:var(--muted)"></ul>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <div class="panel">
           <h4 style="margin-top:0">Career & Projects</h4>
           <div class="projects">
             <div class="project-item">
@@ -202,13 +235,6 @@ Design: light theme, soft & cozy style, mobile-friendly.
           </div>
         </div>
 
-        <div style="height:14px"></div>
-
-        <div class="panel">
-          <h4 style="margin-top:0">Monthly Reflection</h4>
-          <div class="journal" id="journal">Write a brief note here about what went well this month and what to improve next month. Example: "Saved RM1100, completed 4 SQL lessons, booked driving school trial."</div>
-        </div>
-
       </section>
 
       <aside>
@@ -226,96 +252,212 @@ Design: light theme, soft & cozy style, mobile-friendly.
         </div>
 
         <div class="widget">
-          <h4>Quick habits</h4>
-          <ul style="margin:6px 0 0 18px;color:var(--muted)">
-            <li>Save first: transfer on payday</li>
-            <li>Autopay credit card (full)</li>
-            <li>Track one project a month</li>
-          </ul>
-        </div>
-
-        <div class="widget">
-          <h4>JLPT Progress</h4>
-          <div class="jlpt">
-            <div style="display:flex;align-items:center;gap:10px"><div style="flex:1"><div class="small">Vocabulary</div><div style="font-weight:700" id="jlpt-vocab">0/800</div></div><div style="width:48px;text-align:right">🏷️</div></div>
-            <div style="display:flex;align-items:center;gap:10px"><div style="flex:1"><div class="small">Grammar</div><div style="font-weight:700" id="jlpt-grammar">0/200</div></div><div style="width:48px;text-align:right">📘</div></div>
-            <div style="display:flex;align-items:center;gap:10px"><div style="flex:1"><div class="small">Listening</div><div style="font-weight:700" id="jlpt-listen">0/100</div></div><div style="width:48px;text-align:right">🎧</div></div>
+          <h4>Timeline Vision</h4>
+          <div class="timeline" id="timeline">
+            <!-- Journey cards injected here -->
           </div>
         </div>
 
         <div class="widget">
-          <h4>Dream board</h4>
-          <div class="small">Apartment: cosy studio. EV: compact city EV. Japan: 3-week trip + short course.</div>
-          <div style="height:10px"></div>
-          <a class="btn" href="#">Download CV</a>
+          <h4>Dream Board</h4>
+          <div class="moodboard">
+            <div>
+              <!-- Pinterest embed for apartment pin -->
+              <a data-pin-do="embedPin" href="https://www.pinterest.com/pin/438819557471608650/">Apartment pin</a>
+            </div>
+            <div>
+              <!-- direct EV image -->
+              <img src="https://i.pinimg.com/1200x/3e/62/f2/3e62f23e3ce7c5bf3cff0d55c931ecd5.jpg" alt="Ora Cat EV">
+            </div>
+          </div>
+          <div style="height:8px"></div>
+          <div class="small">Tip: Click the apartment pin to open Pinterest.</div>
         </div>
 
       </aside>
     </main>
 
     <footer>
-      Built for you • Edit values in the script section of this file to update progress.
+      Built for you • Edited to include interactive checklist & timeline. Data stored locally in your browser.
     </footer>
   </div>
 
+  <!-- Pinterest embed script -->
+  <script async defer src="https://assets.pinterest.com/js/pinit.js"></script>
+
   <script>
     // --- USER VALUES ---
-    // Update these values to reflect your current savings/progress.
     const user = {
       monthlySalary: 3000,
       saveThisMonth: 1100,
-
-      // funds in RM
-      funds: {
-        japan: { current: 2200, goal: 8000 },
-        license: { current: 900, goal: 2800 },
-        ev: { current: 5000, goal: 100000 },
-      },
-      // JLPT progress (percent or counts)
-      jlpt: { percent: 60, vocab: 240, vocabGoal: 800, grammar: 60, grammarGoal:200, listen: 40, listenGoal:100 }
+      funds: { japan: { current:2200, goal:8000 }, license:{current:900,goal:2800}, ev:{current:5000,goal:100000} },
+      jlpt: { percent:60, vocab:240, vocabGoal:800, grammar:60, grammarGoal:200, listen:40, listenGoal:100 }
     }
 
+    // --- UI Update: Progress bars ---
     function formatRM(x){ return 'RM ' + x.toLocaleString('en-MY') }
-
     function updateProgress(){
-      // Japan
       const pJapan = Math.min(100, Math.round(user.funds.japan.current / user.funds.japan.goal * 100))
       document.getElementById('bar-japan').style.width = pJapan + '%'
       document.getElementById('amt-japan').textContent = formatRM(user.funds.japan.current)
 
-      // License
       const pLic = Math.min(100, Math.round(user.funds.license.current / user.funds.license.goal * 100))
       document.getElementById('bar-license').style.width = pLic + '%'
       document.getElementById('amt-license').textContent = formatRM(user.funds.license.current)
 
-      // EV
       const pEv = Math.min(100, Math.round(user.funds.ev.current / user.funds.ev.goal * 100))
       document.getElementById('bar-ev').style.width = pEv + '%'
       document.getElementById('amt-ev').textContent = formatRM(user.funds.ev.current)
 
-      // JLPT
       const pJlpt = Math.min(100, Math.round(user.jlpt.percent))
       document.getElementById('bar-jlpt').style.width = pJlpt + '%'
       document.getElementById('amt-jlpt').textContent = pJlpt + '%'
-
-      document.getElementById('jlpt-vocab').textContent = user.jlpt.vocab + '/' + user.jlpt.vocabGoal
-      document.getElementById('jlpt-grammar').textContent = user.jlpt.grammar + '/' + user.jlpt.grammarGoal
-      document.getElementById('jlpt-listen').textContent = user.jlpt.listen + '/' + user.jlpt.listenGoal
     }
 
-    // init
     updateProgress()
 
-    // Simple editable journal: click to edit, click outside to save
-    const journal = document.getElementById('journal')
-    journal.addEventListener('click', ()=>{
-      if (journal.getAttribute('contenteditable') !== 'true'){
-        journal.setAttribute('contenteditable','true'); journal.focus(); journal.style.border='1px solid rgba(0,0,0,0.06)';
-      }
+    // --- Checklist Logic ---
+    const checklistTemplate = [
+      { key:'savings', label:'Savings (transfer saved amount)' },
+      { key:'needs', label:'Needs (food, transport, bills)' },
+      { key:'wants', label:'Wants (treats, shopping)' },
+      { key:'learning', label:'Learning / Skill (courses, JLPT)' },
+      { key:'credit', label:'Credit card payment (full)' }
+    ]
+
+    function monthKeyFromDate(d){
+      const y = d.getFullYear(); const m = String(d.getMonth()+1).padStart(2,'0'); return y + '-' + m
+    }
+
+    let currentDate = new Date()
+    // try to restore last viewed month
+    const savedView = localStorage.getItem('zian-last-view');
+    if (savedView) { currentDate = new Date(savedView + '-01') }
+
+    function renderMonthLabel(){
+      const opts = { year:'numeric', month:'long' }
+      document.getElementById('month-label').textContent = currentDate.toLocaleDateString(undefined, opts)
+    }
+
+    function saveChecklistFor(dateKey, data){
+      localStorage.setItem('zian-checklist-' + dateKey, JSON.stringify(data))
+      // record month in history index
+      const idx = JSON.parse(localStorage.getItem('zian-checklist-index')||'[]')
+      if (!idx.includes(dateKey)){ idx.unshift(dateKey); localStorage.setItem('zian-checklist-index', JSON.stringify(idx.slice(0,24))) }
+      localStorage.setItem('zian-last-view', dateKey)
+      renderHistory()
+    }
+
+    function loadChecklistFor(dateKey){
+      const raw = localStorage.getItem('zian-checklist-' + dateKey)
+      return raw ? JSON.parse(raw) : null
+    }
+
+    function renderChecklist(){
+      renderMonthLabel()
+      const key = monthKeyFromDate(currentDate)
+      const container = document.getElementById('checklist')
+      container.innerHTML = ''
+      let data = loadChecklistFor(key)
+      if (!data){ data = {} ; checklistTemplate.forEach(it=>data[it.key]=false) }
+
+      checklistTemplate.forEach(item=>{
+        const div = document.createElement('div')
+        div.className='check-item'
+        const cb = document.createElement('input')
+        cb.type='checkbox'; cb.checked = !!data[item.key]
+        cb.addEventListener('change', ()=>{
+          data[item.key] = cb.checked; saveChecklistFor(key, data); renderHistory(); renderChecklist()
+        })
+        const lbl = document.createElement('div'); lbl.textContent = item.label; lbl.className='small'
+        const spacer = document.createElement('div'); spacer.style.flex='1'
+        const status = document.createElement('div'); status.style.fontWeight='700'; status.textContent = cb.checked ? 'Done' : 'Pending'
+        div.appendChild(cb); div.appendChild(lbl); div.appendChild(spacer); div.appendChild(status)
+        container.appendChild(div)
+      })
+    }
+
+    function renderHistory(){
+      const idx = JSON.parse(localStorage.getItem('zian-checklist-index')||'[]')
+      const list = document.getElementById('history-list')
+      list.innerHTML = ''
+      if (idx.length===0){ list.innerHTML = '<li class="small">No history yet — your monthly checks will appear here.</li>'; return }
+      idx.forEach(k=>{
+        const d = loadChecklistFor(k) || {}
+        const done = Object.values(d).filter(Boolean).length
+        const total = checklistTemplate.length
+        const li = document.createElement('li')
+        li.innerHTML = `<a href="#" data-month="${k}" class="small">${k} — ${done}/${total} tasks</a>`
+        li.querySelector('a').addEventListener('click', (e)=>{ e.preventDefault(); currentDate = new Date(k + '-01'); renderChecklist(); })
+        list.appendChild(li)
+      })
+    }
+
+    document.getElementById('prev-month').addEventListener('click', ()=>{ currentDate.setMonth(currentDate.getMonth()-1); renderChecklist(); })
+    document.getElementById('next-month').addEventListener('click', ()=>{ currentDate.setMonth(currentDate.getMonth()+1); renderChecklist(); })
+    document.getElementById('clear-month').addEventListener('click', ()=>{
+      const key = monthKeyFromDate(currentDate)
+      localStorage.removeItem('zian-checklist-' + key)
+      // remove from index
+      const idx = JSON.parse(localStorage.getItem('zian-checklist-index')||'[]')
+      const newIdx = idx.filter(x=>x!==key)
+      localStorage.setItem('zian-checklist-index', JSON.stringify(newIdx))
+      renderChecklist(); renderHistory()
     })
-    journal.addEventListener('blur', ()=>{
-      journal.setAttribute('contenteditable','false'); journal.style.border='1px dashed rgba(0,0,0,0.03)';
-    })
+
+    // init checklist
+    renderChecklist(); renderHistory()
+
+    // --- Timeline Vision ---
+    const timelineData = [
+      {year:2025, items:[
+        {icon:'🎯',title:'Foundation',note:'Build emergency fund; start Shariah CC; begin SQL refresh'},
+        {icon:'📚',title:'JLPT N5 → N4',note:'Weekly study, flashcards, join classes'}
+      ]},
+      {year:2026, items:[
+        {icon:'💼',title:'Data Engineer Prep',note:'Complete 3 mini ETL projects; learn Airflow basics'},
+        {icon:'🚗',title:'Driving License',note:'Save RM250/month; enroll and complete lessons'}
+      ]},
+      {year:2027, items:[
+        {icon:'🌏',title:'Japan Trip',note:'Short language course or 3-week trip; use travel fund'},
+        {icon:'📈',title:'Income Growth',note:'Aim for higher-paying data role; increase savings rate'}
+      ]},
+      {year:2029, items:[
+        {icon:'🏠',title:'Apartment Planning',note:'Start down payment saving; research locations and costs'},
+        {icon:'⚡',title:'EV Research',note:'Compare compact EVs and charging needs'}
+      ]}
+    ]
+
+    function renderTimeline(){
+      const container = document.getElementById('timeline')
+      container.innerHTML = ''
+      timelineData.forEach(block=>{
+        const row = document.createElement('div'); row.className='journey'
+        const year = document.createElement('div'); year.className='year'; year.textContent = block.year
+        const card = document.createElement('div'); card.className='card'
+        block.items.forEach(it=>{
+          const el = document.createElement('div'); el.style.marginBottom='8px'
+          el.innerHTML = `<div style="font-weight:700">${it.icon} ${it.title}</div><div class="small">${it.note}</div>`
+          card.appendChild(el)
+        })
+        row.appendChild(year); row.appendChild(card); container.appendChild(row)
+      })
+    }
+
+    renderTimeline()
+
+    // small editable journal kept from previous build
+    const journalKey = 'zian-journal'
+    const journalEl = document.getElementById('journal')
+    // ensure journal exists on page? if not, create small placeholder below projects
+    if (!journalEl){
+      // noop
+    } else {
+      const saved = localStorage.getItem(journalKey)
+      if (saved) journalEl.innerHTML = saved
+      journalEl.addEventListener('click', ()=>{ if (journalEl.getAttribute('contenteditable')!=='true'){ journalEl.setAttribute('contenteditable','true'); journalEl.focus(); journalEl.style.border='1px solid rgba(0,0,0,0.06)'; } })
+      journalEl.addEventListener('blur', ()=>{ journalEl.setAttribute('contenteditable','false'); journalEl.style.border='1px dashed rgba(0,0,0,0.03)'; localStorage.setItem(journalKey, journalEl.innerHTML) })
+    }
 
   </script>
 </body>
